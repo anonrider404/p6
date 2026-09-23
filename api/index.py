@@ -22,6 +22,7 @@ Password: qwerREWQ1234$#@!
 import os
 import re
 import sqlite3
+import tempfile
 from flask import Flask, Response, request, jsonify, session
 
 app = Flask(__name__)
@@ -33,8 +34,14 @@ app.config.update(
 )
 
 ADMIN_PASSWORD = "qwerREWQ1234$#@!"
-DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sr_physics.db")
 
+
+# ── Vercel: filesystem is read-only except /tmp (ephemeral) ──
+# Local dev: keep the DB next to the script as before.
+if os.environ.get("VERCEL"):
+    DB_PATH = os.path.join(tempfile.gettempdir(), "sr_physics.db")
+else:
+    DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sr_physics.db")
 # ============================================================
 # 🔴 REPLACE WITH YOUR HOSTED LOGO URL
 # ============================================================
